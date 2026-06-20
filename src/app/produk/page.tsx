@@ -239,12 +239,20 @@ export default function ProdukPage() {
               key={product.id}
               className="bg-white rounded-3xl border border-slate-100 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col group hover:-translate-y-1"
             >
-              {/* Cover Card - Menggunakan background gradien dan Emoji untuk estetika modern */}
-              <div className={`h-40 bg-gradient-to-r ${getCategoryGradient(product.category)} flex items-center justify-center relative overflow-hidden`}>
-                <span className="text-6xl transform group-hover:scale-110 transition-transform duration-300">
-                  {getCategoryEmoji(product.category)}
-                </span>
-                <span className="absolute top-4 right-4 bg-white/20 backdrop-blur-md text-white text-xs font-bold px-3 py-1 rounded-full border border-white/10 uppercase">
+              {/* Cover Card - Menggunakan Gambar Produk jika ada, atau background gradien & Emoji */}
+              <div className={`h-40 relative overflow-hidden ${!product.image_url ? `bg-gradient-to-r ${getCategoryGradient(product.category)} flex items-center justify-center` : ''}`}>
+                {product.image_url ? (
+                  <img 
+                    src={product.image_url} 
+                    alt={product.name} 
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                ) : (
+                  <span className="text-6xl transform group-hover:scale-110 transition-transform duration-300">
+                    {getCategoryEmoji(product.category)}
+                  </span>
+                )}
+                <span className="absolute top-4 right-4 bg-black/40 backdrop-blur-md text-white text-xs font-bold px-3 py-1 rounded-full border border-white/10 uppercase">
                   {product.category || "Produk"}
                 </span>
               </div>
@@ -275,10 +283,10 @@ export default function ProdukPage() {
                   href={getWhatsAppLink(product.name, product.price)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-5 w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 px-4 rounded-2xl text-center text-sm shadow-md shadow-emerald-500/10 hover:shadow-emerald-500/20 transition-all flex items-center justify-center space-x-2"
+                  className="mt-5 w-full bg-[#25D366] hover:bg-[#22c35e] text-white font-bold py-3 px-4 rounded-2xl text-center text-sm shadow-md shadow-[#25D366]/10 hover:shadow-[#25D366]/20 transition-all flex items-center justify-center space-x-2"
                 >
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.717-1.458L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.859-4.42 9.863-9.864.002-2.634-1.024-5.117-2.892-6.98-1.868-1.863-4.355-2.887-6.993-2.887-5.443 0-9.866 4.42-9.87 9.866-.001 1.779.47 3.514 1.36 5.052L1.824 21.8l4.823-1.646zm12.19-5.143c-.26-.13-1.54-.76-1.78-.85-.24-.09-.41-.13-.58.13-.17.26-.66.85-.81 1.02-.15.17-.3.2-.56.07-.26-.13-1.1-.4-2.1-1.3-.77-.69-1.3-1.55-1.45-1.81-.15-.26-.02-.4.11-.53.12-.11.26-.3.39-.45.13-.15.17-.26.26-.43.09-.17.04-.3-.02-.43-.06-.13-.58-1.39-.79-1.9-.21-.51-.43-.44-.58-.45-.15-.01-.32-.01-.49-.01-.17 0-.45.06-.69.3-.24.24-.92.9-1.13 2.19-.21 1.28.72 2.53.82 2.67.1.14 1.83 2.8 4.43 3.93 1.15.5 2.05.78 2.76.99.64.21 1.23.18 1.69.11.51-.08 1.54-.63 1.76-1.24.22-.6.22-1.12.15-1.24-.07-.12-.25-.19-.51-.32z"/>
+                  <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 448 512" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/>
                   </svg>
                   <span>Pesan Sekarang</span>
                 </a>

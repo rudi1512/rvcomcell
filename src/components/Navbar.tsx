@@ -1,12 +1,28 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { supabase } from "@/lib/supabase";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [user, setUser] = useState<any>(null);
   const pathname = usePathname();
+
+  useEffect(() => {
+    // Cek sesi login saat ini
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+
+    // Dengarkan perubahan status login (login/logout)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   const menuItems = [
     { name: "Beranda", path: "/" },
@@ -20,6 +36,16 @@ export default function Navbar() {
     }
     return pathname.startsWith(path);
   };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    window.location.href = "/";
+  };
+
+  // Sembunyikan Navbar di halaman admin
+  if (pathname.startsWith("/admin")) {
+    return null;
+  }
 
   return (
     <nav className="bg-white/90 backdrop-blur-md shadow-sm py-4 px-6 md:px-12 sticky top-0 z-50 border-b border-slate-100">
@@ -45,10 +71,31 @@ export default function Navbar() {
           ))}
         </div>
 
-        <div className="flex items-center space-x-4">
-          <button className="hidden sm:block bg-blue-600 text-white px-5 py-2 rounded-xl text-sm font-semibold hover:bg-blue-700 transition-colors shadow-sm">
-            Login
-          </button>
+        {/* Desktop Auth Buttons */}
+        <div className="flex items-center space-x-2">
+          {user ? (
+            <div className="hidden sm:flex items-center space-x-2">
+              <Link 
+                href="/admin/dashboard" 
+                className="bg-blue-600 text-white px-5 py-2 rounded-xl text-sm font-semibold hover:bg-blue-700 transition-colors shadow-sm"
+              >
+                Dashboard
+              </Link>
+              <button
+                onClick={handleLogout}
+                className="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-xl text-sm font-semibold transition-colors"
+              >
+                Logout
+              </button>
+            </div>
+          ) : (
+            <Link 
+              href="/admin/login" 
+              className="hidden sm:block bg-blue-600 text-white px-5 py-2 rounded-xl text-sm font-semibold hover:bg-blue-700 transition-colors shadow-sm"
+            >
+              Login
+            </Link>
+          )}
 
           {/* Tombol Burger Mobile */}
           <button
@@ -84,10 +131,37 @@ export default function Navbar() {
               {item.name}
             </Link>
           ))}
-          <div className="pt-2 px-3">
-            <button className="w-full bg-blue-600 text-white py-2.5 rounded-xl text-sm font-semibold hover:bg-blue-700 transition-colors shadow-sm">
-              Login
-            </button>
+          
+          {/* Mobile Auth Buttons */}
+          <div className="pt-2 px-3 border-t border-slate-100 mt-2 space-y-2 sm:hidden">
+            {user ? (
+              <>
+                <Link
+                  href="/admin/dashboard"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="block w-full bg-blue-600 text-white text-center py-2.5 rounded-xl text-sm font-semibold hover:bg-blue-700 transition-colors shadow-sm"
+                >
+                  Dashboard
+                </Link>
+                <button
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    handleLogout();
+                  }}
+                  className="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 py-2.5 rounded-xl text-sm font-semibold transition-colors"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <Link
+                href="/admin/login"
+                onClick={() => setIsMenuOpen(false)}
+                className="block w-full bg-blue-600 text-white text-center py-2.5 rounded-xl text-sm font-semibold hover:bg-blue-700 transition-colors shadow-sm"
+              >
+                Login
+              </Link>
+            )}
           </div>
         </div>
       )}
