@@ -28,6 +28,7 @@ export default function Navbar() {
     { name: "Beranda", path: "/" },
     { name: "Produk", path: "/produk" },
     { name: "Software", path: "/software" },
+    { name: "Kursus", path: "/kursus" },
   ];
 
   const isActive = (path: string) => {
