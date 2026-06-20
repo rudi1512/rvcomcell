@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -15,9 +17,6 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "RV Comcell - Solusi Teknologi Terlengkap",
   description: "Pusat penjualan Komputer, Laptop, Printer, CCTV, dan Smartphone. Jasa Service profesional serta Pembuatan Website & Aplikasi Android.",
-  icons: {
-    icon: "/icon.jpg",
-  },
 };
 
 export default function RootLayout({
@@ -27,10 +26,14 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
+      lang="id"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col bg-slate-50 text-slate-800 font-sans">
+        <Navbar />
+        {children}
+        <Footer />
+      </body>
     </html>
   );
 }
